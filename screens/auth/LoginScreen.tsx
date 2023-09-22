@@ -4,9 +4,9 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
+  TextInput
 } from "react-native";
 import Spacing from "../../constants/Spacing";
 import FontSize from "../../constants/FontSize";
@@ -15,9 +15,9 @@ import Font from "../../constants/Font";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Register">;
+type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
-const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
+const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
   const [value, setValue] = useState("");
   const [formattedValue, setFormattedValue] = useState("");
   const [valid, setValid] = useState(false);
@@ -35,7 +35,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
           <Text
             style={styles.viewAuthTextHeader}
           >
-            Inscription
+            Connexion
           </Text>
           <Text
             style={styles.logoAuth}
@@ -46,10 +46,6 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
         <View
           style={styles.viewFormAuth}
         >
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Prenom Nom" />
           <PhoneInput
             ref={phoneInput}
             defaultValue={value}
@@ -84,12 +80,16 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
             styles.inputAuth,
             focused && styles.inputAuthFocus,
           ]} placeholder="Mot de passe" secureTextEntry={true} />
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Mot de passe confirmation" secureTextEntry={true} />
         </View>
 
+        <View>
+          <Text
+            style={styles.textForgetPassword}
+            onPress={() => navigate("ForgetPassword")}
+          >
+            Mot de passe oublié ?
+          </Text>
+        </View>
         <View
           style={styles.viewButtonAuth}>
           <TouchableOpacity
@@ -98,18 +98,18 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
             <Text
               style={styles.buttonAuthText}
             >
-              S'inscrire
+              Connexion
             </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => navigate("Login")}
+          onPress={() => navigate("Register")}
           style={styles.notAuthAction}
         >
           <Text
             style={styles.notAuthActionText}
           >
-            Déja un compte ?
+            Pas encore de compte ?
           </Text>
         </TouchableOpacity>
       </View>
@@ -117,7 +117,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
   );
 };
 
-export default RegisterScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -174,6 +174,9 @@ const styles = StyleSheet.create({
     marginVertical: Spacing * 3,
     alignItems: "center",
   },
+  inputInvalide: {
+    color: "red"
+  },
   inputAuth: {
     fontFamily: Font["poppins-regular"],
     fontSize: FontSize.small,
@@ -191,8 +194,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: Spacing,
   },
-  inputInvalide: {
-    color: "red"
+  textForgetPassword: {
+    fontFamily: Font["poppins-semiBold"],
+    fontSize: FontSize.small,
+    color: Colors.primary,
+    alignSelf: "flex-end",
   },
   viewButtonAuth: {
     alignItems: "center",
