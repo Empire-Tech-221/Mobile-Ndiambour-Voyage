@@ -91,7 +91,7 @@ const VerifyOTPScreen: React.FC<Props> = ({ route, navigation: { navigate } }) =
                 >
                     <TextInput style={[
                         styles.inputAuth,
-                        focused && styles.inputAuthFocus, ,
+                        focused && styles.inputAuthFocus,
                     ]} placeholder="Code de vérification"
                         keyboardType="numeric"
                         value={otp}
