@@ -5,22 +5,64 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput
 } from "react-native";
 import styles from "../../styles/auth";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
+import AppTextInput from "../../components/AppTextInput";
+import AppPhoneInput from "../../components/AppPhoneInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
+  const phoneInput = useRef<PhoneInput>(null);
+  const [password, setPassword] = useState("");
+
   const [value, setValue] = useState("");
   const [formattedValue, setFormattedValue] = useState("");
-  const [valid, setValid] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
-  const phoneInput = useRef<PhoneInput>(null);
-  const [focused, setFocused] = useState<boolean>(false);
+  const [showMessageInputInvalid, setShowMessageInputInvalid] = useState(false);
+
+  const handleForgetPassword = () => {
+    navigate("ForgetPassword");
+  };
+
+  const handleRegister = () => {
+    navigate("Register");
+  };
+
+  const handleSubmit = () => {
+    let isValid = true;
+    let checkPhoneValid = phoneInput.current?.isValidNumber(value)
+
+    if (!checkPhoneValid) {
+      setShowMessage(true);
+      isValid = false;
+    } else {
+      setShowMessage(false);
+    }
+
+    if (password.trim() === "") {
+      setShowMessageInputInvalid(true);
+      isValid = false;
+    } else {
+      setShowMessageInputInvalid(false);
+    }
+
+    if (isValid) {
+      navigate("Welcome");
+    }
+  };
+
+  const ChangeTextPhoneInput = (text: string) => {
+    setValue(text);
+  };
+
+  const ChangeFormattedTextPhoneInput = (text: string) => {
+    setFormattedValue(text);
+  };
+
   return (
     <SafeAreaView>
       <View
@@ -43,46 +85,30 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
         <View
           style={styles.viewFormAuth}
         >
-          <PhoneInput
-            ref={phoneInput}
+          <AppPhoneInput
             defaultValue={value}
-            defaultCode="SN"
-            layout="first"
-            onChangeText={(text) => {
-              setValue(text);
-            }}
             placeholder="Numéro de téléphone"
-            containerStyle={[
-              styles.phoneNumberInputContainer,
-              focused && styles.phoneNumberInputContainerFocused,
-            ]}
-            textContainerStyle={[
-              styles.phoneNumberInputTextContainer,
-              focused && styles.phoneNumberInputTextContainerFocused,
-            ]}
-            textInputStyle={[
-              styles.phoneNumberInputText,
-              focused && styles.phoneNumberInputTextFocused,
-            ]}
-            onChangeFormattedText={(text) => {
-              setFormattedValue(text);
-            }}
+            onChangeText={ChangeTextPhoneInput}
+            onChangeFormattedText={ChangeFormattedTextPhoneInput}
+            ref={phoneInput}
           />
           {(showMessage && phoneInput.current?.isValidNumber(value) === false) ?
             (<Text
               style={styles.inputInvalide}
             >
               Numéro de Téléphone invalide</Text>) : false}
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Mot de passe" secureTextEntry={true} />
+          <AppTextInput placeholder="Mot de passe" secureTextEntry={true} onChangeText={setPassword} />
+          {showMessageInputInvalid ?
+            (<Text
+              style={styles.inputInvalide}
+            >
+              Mot de pass requis</Text>) : false}
         </View>
 
         <View>
           <Text
             style={styles.textForgetPassword}
-            onPress={() => navigate("ForgetPassword")}
+            onPress={handleForgetPassword}
           >
             Mot de passe oublié ?
           </Text>
@@ -90,6 +116,7 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
         <View
           style={styles.viewButtonAuth}>
           <TouchableOpacity
+            onPress={handleSubmit}
             style={styles.buttonAuth}
           >
             <Text
@@ -100,7 +127,7 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => navigate("Register")}
+          onPress={handleRegister}
           style={styles.notAuthAction}
         >
           <Text

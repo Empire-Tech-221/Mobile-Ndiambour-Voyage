@@ -9,16 +9,43 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import styles from "../../styles/auth";
+import AppPhoneInput from "../../components/AppPhoneInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ForgetPassword">;
 
 const ForgetPasswordScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
   const [value, setValue] = useState("");
   const [formattedValue, setFormattedValue] = useState("");
-  const [valid, setValid] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const phoneInput = useRef<PhoneInput>(null);
-  const [focused, setFocused] = useState<boolean>(false);
+
+  const handleSubmit = () => {
+    let isValid = true;
+
+    if (!phoneInput.current?.isValidNumber(value)) {
+      setShowMessage(true);
+      isValid = false;
+    } else {
+      setShowMessage(false);
+    }
+
+    if (isValid) {
+      navigate("VerifyOTP", { phoneNumber: formattedValue });
+    }
+  };
+
+  const handleLogin = () => {
+    navigate("Login");
+  };
+
+  const ChangeTextPhoneInput = (text: string) => {
+    setValue(text);
+  };
+
+  const ChangeFormattedTextPhoneInput = (text: string) => {
+    setFormattedValue(text);
+  };
+
   return (
     <SafeAreaView>
       <View
@@ -41,30 +68,12 @@ const ForgetPasswordScreen: React.FC<Props> = ({ navigation: { navigate } }) => 
         <View
           style={styles.viewFormAuth}
         >
-          <PhoneInput
-            ref={phoneInput}
+          <AppPhoneInput
             defaultValue={value}
-            defaultCode="SN"
-            layout="first"
-            onChangeText={(text) => {
-              setValue(text);
-            }}
             placeholder="Numéro de téléphone"
-            containerStyle={[
-              styles.phoneNumberInputContainer,
-              //   focused && styles.phoneNumberInputContainerFocused,
-            ]}
-            textContainerStyle={[
-              styles.phoneNumberInputTextContainer,
-              //   focused && styles.phoneNumberInputTextContainerFocused,
-            ]}
-            textInputStyle={[
-              styles.phoneNumberInputText,
-              //   focused && styles.phoneNumberInputTextFocused,
-            ]}
-            onChangeFormattedText={(text) => {
-              setFormattedValue(text);
-            }}
+            onChangeText={ChangeTextPhoneInput}
+            onChangeFormattedText={ChangeFormattedTextPhoneInput}
+            ref={phoneInput}
           />
           {(showMessage && phoneInput.current?.isValidNumber(value) === false) ?
             (<Text
@@ -75,7 +84,7 @@ const ForgetPasswordScreen: React.FC<Props> = ({ navigation: { navigate } }) => 
         <View
           style={styles.viewButtonAuth}>
           <TouchableOpacity
-            onPress={() => navigate("VerifyOTP", { phoneNumber: formattedValue })}
+            onPress={handleSubmit}
             style={styles.buttonAuth}
           >
             <Text
@@ -86,7 +95,7 @@ const ForgetPasswordScreen: React.FC<Props> = ({ navigation: { navigate } }) => 
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => navigate("Login")}
+          onPress={handleLogin}
           style={styles.notAuthAction}
         >
           <Text

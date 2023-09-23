@@ -3,23 +3,82 @@ import PhoneInput from "react-native-phone-number-input";
 import {
   SafeAreaView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import styles from "../../styles/auth";
+import AppTextInput from "../../components/AppTextInput";
+import AppPhoneInput from "../../components/AppPhoneInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
 const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [value, setValue] = useState("");
   const [formattedValue, setFormattedValue] = useState("");
-  const [valid, setValid] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [showMessageInputName, setShowMessageInputName] = useState(false);
+  const [showMessageInputInvalid, setShowMessageInputInvalid] = useState(false);
+  const [showMessageConfirmPassword, setShowMessageConfirmPassword] = useState(false);
+  
   const phoneInput = useRef<PhoneInput>(null);
-  const [focused, setFocused] = useState<boolean>(false);
+
+  const handleLogin = () => {
+    navigate("Login");
+  };
+
+  const ChangeTextPhoneInput = (text: string) => {
+    setValue(text);
+  };
+
+  const ChangeFormattedTextPhoneInput = (text: string) => {
+    setFormattedValue(text);
+  };
+
+  const handleSubmit = () => {
+    // navigate("Login");
+    let isValid = true;
+
+    if (!phoneInput.current?.isValidNumber(value)) {
+      setShowMessage(true);
+      isValid = false;
+    } else {
+      setShowMessage(false);
+    }
+
+    if (name.trim() === "") {
+      setShowMessageInputName(true);
+      isValid = false;
+    } else {
+      setShowMessageInputName(false);
+    }
+
+    if (password.trim() === "") {
+      setShowMessageInputInvalid(true);
+      isValid = false;
+    } else {
+      setShowMessageInputInvalid(false);
+    }
+
+    // Vérification du champ de confirmation de mot de passe
+    if (password.trim() !== confirmPassword.trim()) {
+      setShowMessageConfirmPassword(true);
+      isValid = false;
+    } else {
+      setShowMessageConfirmPassword(false);
+    }
+
+    if (isValid) {
+      // Toutes les validations sont réussies, naviguer vers l'écran de connexion
+      navigate("Welcome");
+    }
+  };
+
   return (
     <SafeAreaView>
       <View
@@ -42,53 +101,43 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
         <View
           style={styles.viewFormAuth}
         >
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Prenom Nom" />
-          <PhoneInput
-            ref={phoneInput}
+          <AppTextInput placeholder="Prenom Nom" onChangeText={setName} />
+          {showMessageInputName ?
+            (<Text
+              style={styles.inputInvalide}
+            >
+              Votre Nom requis</Text>) : false}
+          <AppPhoneInput
             defaultValue={value}
-            defaultCode="SN"
-            layout="first"
-            onChangeText={(text) => {
-              setValue(text);
-            }}
             placeholder="Numéro de téléphone"
-            containerStyle={[
-              styles.phoneNumberInputContainer,
-              focused && styles.phoneNumberInputContainerFocused,
-            ]}
-            textContainerStyle={[
-              styles.phoneNumberInputTextContainer,
-              focused && styles.phoneNumberInputTextContainerFocused,
-            ]}
-            textInputStyle={[
-              styles.phoneNumberInputText,
-              focused && styles.phoneNumberInputTextFocused,
-            ]}
-            onChangeFormattedText={(text) => {
-              setFormattedValue(text);
-            }}
+            onChangeText={ChangeTextPhoneInput}
+            onChangeFormattedText={ChangeFormattedTextPhoneInput}
+            ref={phoneInput}
           />
           {(showMessage && phoneInput.current?.isValidNumber(value) === false) ?
             (<Text
               style={styles.inputInvalide}
             >
               Numéro de Téléphone invalide</Text>) : false}
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Mot de passe" secureTextEntry={true} />
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Mot de passe confirmation" secureTextEntry={true} />
+
+          <AppTextInput placeholder="Mot de passe" secureTextEntry={true} onChangeText={setPassword} />
+          {showMessageInputInvalid ?
+            (<Text
+              style={styles.inputInvalide}
+            >
+              Mot de pass requis</Text>) : false}
+          <AppTextInput placeholder="Mot de passe confirmation" secureTextEntry={true} onChangeText={setConfirmPassword} />
+          {showMessageConfirmPassword ?
+            (<Text
+              style={styles.inputInvalide}
+            >
+              Les Mots de pass ne concordent pas</Text>) : false}
         </View>
 
         <View
           style={styles.viewButtonAuth}>
           <TouchableOpacity
+            onPress={handleSubmit}
             style={styles.buttonAuth}
           >
             <Text
@@ -99,7 +148,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => navigate("Login")}
+          onPress={handleLogin}
           style={styles.notAuthAction}
         >
           <Text
@@ -114,111 +163,3 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
 };
 
 export default RegisterScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   phoneNumberInputContainer: {
-//     width: "95%",
-//     backgroundColor: Colors.lightPrimary,
-//     borderRadius: Spacing * 1,
-//     marginVertical: Spacing,
-//     borderColor: Colors.primary,
-//   },
-//   phoneNumberInputContainerFocused: {
-//     borderWidth: 1.5,
-//     borderColor: Colors.primary,
-//     shadowOffset: { width: 4, height: Spacing },
-//     shadowColor: Colors.primary,
-//     shadowOpacity: 0.2,
-//     shadowRadius: Spacing,
-//   },
-//   phoneNumberInputTextContainer: {
-//     padding: Spacing * 1.5,
-//   },
-//   phoneNumberInputTextContainerFocused: {},
-//   phoneNumberInputText: {
-//     fontFamily: Font['poppins-regular'],
-//     fontSize: FontSize.small,
-//     color: 'black',
-//   },
-//   phoneNumberInputTextFocused: {
-//     borderColor: "red",
-//   },
-//   viewAuth: {
-//     padding: Spacing * 2,
-//   },
-//   viewAuthHeader: {
-//     alignItems: "center",
-//   },
-//   viewAuthTextHeader: {
-//     fontSize: FontSize.xLarge,
-//     color: Colors.primary,
-//     fontFamily: Font["poppins-bold"],
-//     marginVertical: Spacing * 3,
-//   },
-//   logoAuth: {
-//     fontFamily: Font["poppins-semiBold"],
-//     fontSize: FontSize.large,
-//     maxWidth: "60%",
-//     textAlign: "center",
-//   },
-//   viewFormAuth: {
-//     marginVertical: Spacing * 3,
-//     alignItems: "center",
-//   },
-//   inputAuth: {
-//     fontFamily: Font["poppins-regular"],
-//     fontSize: FontSize.small,
-//     padding: Spacing * 1.5,
-//     backgroundColor: Colors.lightPrimary,
-//     borderRadius: Spacing * 1,
-//     marginVertical: Spacing,
-//     width: "95%",
-//   },
-//   inputAuthFocus: {
-//     borderWidth: 1.5,
-//     borderColor: Colors.primary,
-//     shadowOffset: { width: 4, height: Spacing },
-//     shadowColor: Colors.primary,
-//     shadowOpacity: 0.2,
-//     shadowRadius: Spacing,
-//   },
-//   inputInvalide: {
-//     color: "red"
-//   },
-//   viewButtonAuth: {
-//     alignItems: "center",
-//   },
-//   buttonAuth: {
-//     padding: Spacing * 1,
-//     backgroundColor: Colors.primary,
-//     marginVertical: Spacing * 3,
-//     borderRadius: Spacing * 1.5,
-//     shadowColor: Colors.primary,
-//     width: "70%",
-//     shadowOffset: {
-//       width: 0,
-//       height: Spacing,
-//     },
-//     shadowRadius: Spacing,
-//   },
-//   buttonAuthText: {
-//     fontFamily: Font["poppins-bold"],
-//     color: Colors.onPrimary,
-//     textAlign: "center",
-//     fontSize: FontSize.medium,
-//   },
-//   notAuthAction: {
-//     padding: Spacing,
-//   },
-//   notAuthActionText: {
-//     fontFamily: Font["poppins-semiBold"],
-//     color: Colors.text,
-//     textAlign: "center",
-//     fontSize: FontSize.small,
-//   }
-// });

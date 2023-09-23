@@ -1,27 +1,47 @@
-import React, { useState, useRef } from "react";
-import PhoneInput from "react-native-phone-number-input";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import styles from "../../styles/auth";
+import AppTextInput from "../../components/AppTextInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ResetPassword">;
 
 const ResetPasswordScreen: React.FC<Props> = ({ route, navigation: { navigate } }) => {
-  const [value, setValue] = useState("");
-  const [formattedValue, setFormattedValue] = useState("");
-  const [valid, setValid] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
-  const phoneInput = useRef<PhoneInput>(null);
-  const [focused, setFocused] = useState<boolean>(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showMessageInputInvalid, setShowMessageInputInvalid] = useState(false);
+  const [showMessageConfirmPassword, setShowMessageConfirmPassword] = useState(false);
 
   const { phoneNumber }: any = route.params;
+
+  const handleSubmit = () => {
+    let isValid = true;
+
+    if (password.trim() === "") {
+      setShowMessageInputInvalid(true);
+      isValid = false;
+    } else {
+      setShowMessageInputInvalid(false);
+    }
+
+    if (password.trim() !== confirmPassword.trim()) {
+      setShowMessageConfirmPassword(true);
+      isValid = false;
+    } else {
+      setShowMessageConfirmPassword(false);
+    }
+
+    if (isValid) {
+      navigate("Welcome");
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -45,19 +65,24 @@ const ResetPasswordScreen: React.FC<Props> = ({ route, navigation: { navigate } 
         <View
           style={styles.viewFormAuth}
         >
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Nouveau Mot de passe" secureTextEntry={true} />
-          <TextInput style={[
-            styles.inputAuth,
-            focused && styles.inputAuthFocus,
-          ]} placeholder="Nouveau Mot de passe confirmation" secureTextEntry={true} />
+          <AppTextInput placeholder="Nouveau Mot de passe" secureTextEntry={true} onChangeText={setPassword} />
+          {showMessageInputInvalid ?
+            (<Text
+              style={styles.inputInvalide}
+            >
+              Mot de pass requis</Text>) : false}
+          <AppTextInput placeholder="Nouveau Mot de passe confirmation" secureTextEntry={true} onChangeText={setConfirmPassword} />
+          {showMessageConfirmPassword ?
+            (<Text
+              style={styles.inputInvalide}
+            >
+              Les Mots de pass ne concordent pas</Text>) : false}
         </View>
 
         <View
           style={styles.viewButtonAuth}>
           <TouchableOpacity
+            onPress={handleSubmit}
             style={styles.buttonAuth}
           >
             <Text

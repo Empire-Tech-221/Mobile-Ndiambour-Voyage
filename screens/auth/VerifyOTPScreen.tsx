@@ -1,25 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
-import PhoneInput from "react-native-phone-number-input";
+import React, { useState, useEffect } from "react";
 import {
     SafeAreaView,
     Text,
     TouchableOpacity,
     View,
-    TextInput
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import styles from "../../styles/auth";
+import AppTextInput from "../../components/AppTextInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ForgetPassword">;
 
 const VerifyOTPScreen: React.FC<Props> = ({ route, navigation: { navigate } }) => {
-    const [value, setValue] = useState("");
-    const [formattedValue, setFormattedValue] = useState("");
-    const [valid, setValid] = useState(false);
-    const [showMessage, setShowMessage] = useState(false);
-    const phoneInput = useRef<PhoneInput>(null);
-    const [focused, setFocused] = useState<boolean>(false);
+    const [showMessageInputInvalid, setShowMessageInputInvalid] = useState(false);
 
     const { phoneNumber }: any = route.params;
     const [otp, setOTP] = useState("");
@@ -40,16 +34,26 @@ const VerifyOTPScreen: React.FC<Props> = ({ route, navigation: { navigate } }) =
     }, [timeLeft]);
 
     const handleVerifyOTP = () => {
-        // Ici, vous devrez écrire du code pour vérifier si le code OTP entré est correct
-        // Si c'est le cas, naviguez vers l'écran Dashboard
-        // Sinon, affichez un message d'erreur à l'utilisateur
-        // navigation.navigate("ChangePassword");
+        let isValid = true;
+
+
+        if (otp.trim() === "") {
+            setShowMessageInputInvalid(true);
+            isValid = false;
+        }
+
+        if (isValid) {
+            setShowMessageInputInvalid(false);
+            navigate("ResetPassword", { phoneNumber: phoneNumber });
+        }
     };
 
     const handleResendOTP = () => {
-        // Ici, vous devrez écrire du code pour renvoyer un OTP au numéro de téléphone de l'utilisateur
-        // Vous pouvez utiliser une API de messagerie comme Twilio ou Nexmo pour cela
         setTimeLeft(120);
+    };
+
+    const handleReturn = () => {
+        navigate("ForgetPassword")
     };
 
     const minutes = Math.floor(timeLeft / 60);
@@ -85,23 +89,17 @@ const VerifyOTPScreen: React.FC<Props> = ({ route, navigation: { navigate } }) =
                 <View
                     style={styles.viewFormAuth}
                 >
-                    <TextInput style={[
-                        styles.inputAuth,
-                        focused && styles.inputAuthFocus,
-                    ]} placeholder="Code de vérification"
-                        keyboardType="numeric"
-                        value={otp}
-                        onChangeText={(text) => setOTP(text)} />
-                    {(showMessage && phoneInput.current?.isValidNumber(value) === false) ?
+                    <AppTextInput placeholder="Code de vérification" keyboardType="numeric" value={otp} onChangeText={(text) => setOTP(text)} />
+                    {showMessageInputInvalid ?
                         (<Text
                             style={styles.inputInvalide}
                         >
-                            Numéro de Téléphone invalide</Text>) : false}
+                            Veuillez saisir le code</Text>) : false}
                 </View>
                 <View
                     style={styles.viewButtonAuth}>
                     <TouchableOpacity
-                        onPress={() => navigate("ResetPassword", { phoneNumber: phoneNumber })}
+                        onPress={handleVerifyOTP}
                         style={styles.buttonAuth}
                     >
                         <Text
@@ -131,7 +129,7 @@ const VerifyOTPScreen: React.FC<Props> = ({ route, navigation: { navigate } }) =
                     </View>
                 </View>
                 <TouchableOpacity
-                    onPress={() => navigate("ForgetPassword")}
+                    onPress={handleReturn}
                     style={styles.retournButton}
                 >
                     <Text

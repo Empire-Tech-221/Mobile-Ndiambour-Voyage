@@ -11,33 +11,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  phoneNumberInputContainer: {
-    width: "95%",
-    backgroundColor: Colors.lightPrimary,
-    borderRadius: Spacing * 1,
-    marginVertical: Spacing,
-    borderColor: Colors.primary,
-  },
-  phoneNumberInputContainerFocused: {
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    shadowOffset: { width: 4, height: Spacing },
-    shadowColor: Colors.primary,
-    shadowOpacity: 0.2,
-    shadowRadius: Spacing,
-  },
-  phoneNumberInputTextContainer: {
-    padding: Spacing * 1.5,
-  },
-  phoneNumberInputTextContainerFocused: {},
-  phoneNumberInputText: {
-    fontFamily: Font["poppins-regular"],
-    fontSize: FontSize.small,
-    color: "black",
-  },
-  phoneNumberInputTextFocused: {
-    borderColor: "red",
-  },
   viewAuth: {
     padding: Spacing * 2,
   },
@@ -62,23 +35,6 @@ const styles = StyleSheet.create({
   },
   inputInvalide: {
     color: "red",
-  },
-  inputAuth: {
-    fontFamily: Font["poppins-regular"],
-    fontSize: FontSize.small,
-    padding: Spacing * 1.5,
-    backgroundColor: Colors.lightPrimary,
-    borderRadius: Spacing * 1,
-    marginVertical: Spacing,
-    width: "95%",
-  },
-  inputAuthFocus: {
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    shadowOffset: { width: 4, height: Spacing },
-    shadowColor: Colors.primary,
-    shadowOpacity: 0.2,
-    shadowRadius: Spacing,
   },
   textForgetPassword: {
     fontFamily: Font["poppins-semiBold"],
