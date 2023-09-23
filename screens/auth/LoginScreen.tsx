@@ -51,7 +51,7 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
     }
 
     if (isValid) {
-      navigate("Welcome");
+      navigate("Dashboard");
     }
   };
 

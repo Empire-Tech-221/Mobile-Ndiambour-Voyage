@@ -18,6 +18,8 @@ export type RootStackParamList = {
     ForgetPassword: undefined;
     VerifyOTP: { phoneNumber: string };
     ResetPassword: { phoneNumber: string };
+    Dashboard: undefined;
+    Profil: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

@@ -7,11 +7,17 @@ import {
   View,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import styles from "../../styles/auth";
 import AppPhoneInput from "../../components/AppPhoneInput";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ForgetPassword">;
+
+// type ForgetPasswordScreenProps = {
+//   route: RouteProp<RootStackParamList, "ForgetPassword">;
+//   navigation: NativeStackScreenProps<RootStackParamList, "ForgetPassword">;
+// };
 
 const ForgetPasswordScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
   const [value, setValue] = useState("");

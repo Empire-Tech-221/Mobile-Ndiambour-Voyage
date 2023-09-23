@@ -16,6 +16,9 @@ import ResetPasswordScreen from "../screens/auth/ResetPasswordScreen";
 
 import Welcome from "../screens/WelcomeScreen";
 
+import DashboardScreen from "../screens/home/DashboardScreen";
+import ProfilScreen from "../screens/home/ProfilScreen";
+
 import { RootStackParamList } from "../types";
 
 const theme = {
@@ -51,8 +54,18 @@ function RootNavigator() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name="ForgetPassword" component={ForgetPasswordScreen} />
-            <Stack.Screen name="VerifyOTP" component={VerifyOTPScreen} />
+            <Stack.Screen name="VerifyOTP" component={VerifyOTPScreen} 
+                // initialParams={{ phoneNumber: "somePhoneNumber" }} 
+            />
             <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+            
+            <Stack.Screen name="Profil" component={ProfilScreen} />
+            <Stack.Screen name="Dashboard" component={DashboardScreen} 
+                // options={{
+                //     headerShown: true,
+                //     title: "Dashboard",
+                // }} 
+            />
         </Stack.Navigator>
     );
 }

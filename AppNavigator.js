@@ -9,7 +9,8 @@ import ForgotPasswordScreen from './src/auth/screens/ForgotPasswordScreen';
 import VerifyOTPScreen from './src/auth/screens/VerifyOTPScreen';
 import ResetPasswordScreen from './src/auth/screens/ResetPasswordScreen';
 
-import DashboardScreen from './src/dashboard/screens/DashboardScreen';
+import DashboardScreen from './screens/home/DashboardScreen';
+import ProfilScreen from './screens/home/ProfilScreen';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,12 @@ const AppNavigator = () => {
         initialParams={{ phoneNumber: phoneNumber }}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Profil" component={ProfilScreen} />
     </Stack.Navigator>
   );
 };
